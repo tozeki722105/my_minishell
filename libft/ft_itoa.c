@@ -6,7 +6,7 @@
 /*   By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 18:34:53 by tozeki            #+#    #+#             */
-/*   Updated: 2023/03/23 17:11:36 by tozeki           ###   ########.fr       */
+/*   Updated: 2024/02/15 08:51:37 by tozeki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*ft_itoa(int n)
 		cn = (unsigned int)(n * -1);
 		dig++;
 	}
-	dig += get_dig_set_sign(cn);
+	dig += get_dig(cn);
 	return (set_return_str(cn, dig, sign));
 }
 
