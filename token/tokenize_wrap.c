@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenize.h                                         :+:      :+:    :+:   */
+/*   tokenize_wrap.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 12:11:01 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/20 01:20:19 by toshi            ###   ########.fr       */
+/*   Created: 2024/04/12 16:11:11 by toshi             #+#    #+#             */
+/*   Updated: 2024/04/25 16:53:20 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TOKENIZE_H
-# define TOKENIZE_H
+#include "tokenize.h"
+#include "../utils/utils.h"
 
-#include "../minishell.h"
+t_token	*tokenize_wrap(char *line)
+{
+	t_token	*head;
 
-t_token		*tokenize(char *line_ptr);
-t_token		*make_new_tkn(char *begining, ssize_t count, enum e_token_kind kind);
-ssize_t		count_text_last(char *begining);
-ssize_t		count_ifs_last(char *begining);
-ssize_t		count_redir_last(char *begining);
-ssize_t		count_quote_last(char *begining);
-ssize_t		count_dollar_last(char *begining);
-
-#endif 
+	head = NULL;
+	if (split_to_token(&head, line) == -1)
+		return (NULL);
+	if (!validate_syntax(head))
+	{
+		free_token_list(head);
+		return (NULL);
+	}
+	return (head);
+}

@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_pwd.c                                      :+:      :+:    :+:   */
+/*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tofujiwa <tofujiwa@student.42.jp>          +#+  +:+       +#+        */
+/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/10 15:55:19 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/20 17:55:47 by tofujiwa         ###   ########.fr       */
+/*   Created: 2024/04/14 00:35:15 by toshi             #+#    #+#             */
+/*   Updated: 2024/04/20 00:52:49 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin.h"
-#include "../libft/libft.h"
+#ifndef PARSE_H
+# define PARSE_H
 
-int	do_pwd(t_manager *manager)
-{
-	ft_putendl_fd(manager->current_dir, STDOUT_FILENO);
-	return (0);
-}
+#include "../minishell.h"
+
+t_tree_node *parse(t_token *tkn_ptr);
+t_tree_node *make_tnode_list(t_token *tkn_ptr);
+void		move_to_redir_tokens(t_tree_node *tnode_head);
+
+#endif

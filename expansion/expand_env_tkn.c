@@ -3,40 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   expand_env_tkn.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:15:59 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/20 01:35:04 by toshi            ###   ########.fr       */
+/*   Updated: 2024/04/26 19:10:01 by tozeki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expansion.h"
 #include "../minishell.h"
 #include "../utils/utils.h"
-#include "../tokenize/tokenize.h"
+#include "../token_tozeki/tokenize.h"
 
-static void _set_kind_and_count(char *begining, enum e_token_kind *kind, ssize_t *count)
+static void	set_kind_and_count(char *first, \
+		enum e_token_kind *kind, ssize_t *count)
 {
 	ssize_t	i;
 
-	if (is_ifs(*begining))
+	if (is_ifs(*first))
 	{
 		*kind = TKN_SPACE;
-		*count = count_ifs_last(begining);
+		*count = count_ifs_last(first);
+		return ;
 	}
-	else
-	{
-		*kind = TKN_TEXT;
-		i = 1;
-		while(begining[i] && !is_ifs(begining[i]))
-			i++;
-		*count = i;
-	}
+	*kind = TKN_TEXT;
+	i = 1;
+	while (first[i] && !is_ifs(first[i]))
+		i++;
+	*count = i;
+	return ;
 }
 
-static t_token *tokenize_space_or_text(char *env_val)
+static t_token	*tokenize_space_or_text(char *env_val)
 {
-	t_token 			*head;
+	t_token				*head;
 	t_token				*new;
 	ssize_t				count;
 	enum e_token_kind	kind;
@@ -44,36 +44,38 @@ static t_token *tokenize_space_or_text(char *env_val)
 	if (env_val == NULL)
 		return (NULL);
 	head = NULL;
-	while(*env_val)
+	while (*env_val)
 	{
-		_set_kind_and_count(env_val, &kind, &count);
-		new = make_new_tkn(env_val, count, kind);
+		set_kind_and_count(env_val, &kind, &count);
+		new = make_new_token(env_val, count, kind);
 		add_token_last(&head, new);
 		env_val += count;
 	}
 	return (head);
 }
 
-t_token	*expand_env_tkn(t_token **dest_head, t_token *env_tkn, t_token *prev, t_manager *manager)
+t_token	*expand_env_token(t_token **head, t_token *env_tkn, \
+	t_token *prev_env, t_manager *manager)
 {
-	t_token *next_ptr;
-	t_token *expnad_list;
+	t_token	*next_ptr;
+	t_token	*expnad_list;
 
 	next_ptr = env_tkn->next;
-	expnad_list = tokenize_space_or_text(ms_getenv(env_tkn->val + sizeof(char), manager));
+	expnad_list = tokenize_space_or_text(ms_getenv(env_tkn->val + \
+					sizeof(char), manager));
 	if (expnad_list == NULL)
 	{
-		if (prev == NULL)
-			*dest_head = next_ptr;
+		if (prev_env == NULL)
+			*head = next_ptr;
 		else
-			prev->next = next_ptr;
+			prev_env->next = next_ptr;
 	}
 	else
 	{
-		if (prev == NULL)
-			*dest_head = expnad_list;
+		if (prev_env == NULL)
+			*head = expnad_list;
 		else
-			prev->next = expnad_list;
+			prev_env->next = expnad_list;
 		find_last_token(expnad_list)->next = next_ptr;
 	}
 	free_token(env_tkn);

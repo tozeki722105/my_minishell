@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 23:14:07 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/19 21:11:40 by toshi            ###   ########.fr       */
+/*   Updated: 2024/04/26 19:04:45 by tozeki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 
 void	upsert_env(t_manager *manager, char *str)
 {
-	char *sep_ptr;
-	char *env_name;
-	t_env *env_ptr;
-	t_env *new;
-	
+	char	*sep_ptr;
+	char	*env_name;
+	t_env	*env_ptr;
+	t_env	*new;
+
 	sep_ptr = ft_strchr(str, '=');
 	if (sep_ptr == NULL)
 		return ;
@@ -29,7 +29,8 @@ void	upsert_env(t_manager *manager, char *str)
 	if (env_ptr)
 	{
 		free(env_ptr->val);
-		env_ptr->val = ft_xsubstr(sep_ptr, 1, (size_t)(ft_strchr(str, '\0') - sep_ptr - 1));
+		env_ptr->val = ft_xsubstr(sep_ptr, 1, \
+					(size_t)(ft_strchr(str, '\0') - sep_ptr - 1));
 	}
 	else
 	{
@@ -39,29 +40,29 @@ void	upsert_env(t_manager *manager, char *str)
 	free(env_name);
 }
 
-t_bool	is_invalid_key(char *key)
+static t_bool	is_valid_key(char *key)
 {
 	if (!(ft_isalpha(*key) || *key == '_'))
-		return (TRUE);
+		return (FALSE);
 	while (*key != '\0' && *key != '=')
 	{
 		if (!(ft_isalnum(*key) || *key == '_'))
-			return (TRUE);
+			return (FALSE);
 		key++;
 	}
-	return (FALSE);
+	return (TRUE);
 }
 
-t_bool	validate_key_and_upsert_env(char *str, t_manager *manager)
+static t_bool	validate_key_and_upsert_env(char *str, t_manager *manager)
 {
-	char *sep_ptr;
-	char *env_name;
-	
+	char	*sep_ptr;
+	char	*env_name;
+
 	sep_ptr = ft_strchr(str, '=');
 	if (sep_ptr == NULL)
 		sep_ptr = ft_strchr(str, '\0');
 	env_name = ft_xsubstr(str, 0, (size_t)(sep_ptr - str));
-	if (is_invalid_key(env_name))
+	if (!is_valid_key(env_name))
 	{
 		perror_arg3("export", env_name, "not a valid identifier");
 		free(env_name);

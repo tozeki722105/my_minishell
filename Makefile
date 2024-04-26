@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: toshi <toshi@student.42.fr>                +#+  +:+       +#+         #
+#    By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 15:18:29 by tofujiwa          #+#    #+#              #
-#    Updated: 2024/04/20 01:37:49 by toshi            ###   ########.fr        #
+#    Updated: 2024/04/26 19:01:11 by tozeki           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ LIBFT_PATH	:=	libft/
 LIBFT_A		:=	$(LIBFT_PATH)libft.a
 SRC_PATHS	:=	$(LIBFT_PATH) \
 				utils/ \
-				tokenize/ \
+				token_tozeki/ \
 				parse/ \
 				expansion/ \
 				execute/ \
@@ -28,6 +28,7 @@ SRC_PATHS	:=	$(LIBFT_PATH) \
 				./
 SRCS		:=	$(foreach path, $(SRC_PATHS), $(wildcard $(path)*.c))
 OUT_PATTERN	:=	$(LIBFT_PATH)% \
+				parse/syntax_check.c \
 				./main_test.c
 OBJS		:=	$(patsubst %.c, %.o, $(filter-out $(OUT_PATTERN), $(SRCS)))
 
@@ -50,5 +51,8 @@ fclean: clean
 	rm -f $(NAME)
 
 re : fclean all
+
+norm :
+	norminette $(SRC_PATHS)
 
 .PHONY: all clean fclean re

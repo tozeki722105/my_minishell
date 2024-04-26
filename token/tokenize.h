@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 22:26:42 by tofujiwa          #+#    #+#             */
-/*   Updated: 2024/04/12 17:00:26 by toshi            ###   ########.fr       */
+/*   Updated: 2024/04/25 16:51:36 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 # define TOKENIZE_H
 
 # include "../minishell.h"
+
+enum e_mode
+{
+	MODE_FIRST,
+	MODE_PIPE,
+	MODE_REDIR,
+};
 
 t_token	*lstlast(t_token *lst);
 void	lst_add_back(t_token **lst, t_token *new);
@@ -32,7 +39,6 @@ ssize_t	quort_in_env(t_token **head, char *line);
 ssize_t	env_token(t_token **head, char *line);
 int		is_metachar(char c);
 ssize_t	quort_error(char c);
-
-t_token  *tokenize_wrap(char *line);
-
+t_token	*tokenize_wrap(char *line);
+t_bool	validate_syntax(t_token *ptr);
 #endif

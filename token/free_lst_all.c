@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenize_wrap.c                                    :+:      :+:    :+:   */
+/*   free_lst_all.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/12 16:11:11 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/12 18:43:42 by toshi            ###   ########.fr       */
+/*   Created: 2023/12/25 19:49:29 by tofujiwa          #+#    #+#             */
+/*   Updated: 2024/04/26 20:39:31 by tozeki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenize.h"
 
-t_token  *tokenize_wrap(char *line)
+void	free_lst_all(t_token **head)
 {
-	t_token *head;
-	
-	head = NULL;
-	if (split_to_token(&head, line) == -1)
-		return (NULL);
-	return (head);
+	t_token	*current;
+	t_token	*next;
+
+	current = *head;
+	while (current != NULL)
+	{
+		next = current->next;
+		if (current->val != NULL)
+			free(current->val);
+		free(current);
+		current = next;
+	}
+	*head = NULL;
 }
