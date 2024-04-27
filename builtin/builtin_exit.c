@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/31 13:24:13 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/19 21:11:23 by toshi            ###   ########.fr       */
+/*   Updated: 2024/04/27 12:56:04 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,24 @@
 #include "../libft/libft.h"
 #include "../utils/utils.h"
 
-char *find_start_and_sign(char *ptr, int *sign)
+static char	*find_start_and_sign(char *ptr, int *sign)
 {
-	while (*ptr && (*ptr == ' ' || *ptr == '\t' || *ptr == '\n' || *ptr == '\v' || *ptr == '\f' || *ptr == '\r'))
+	while (*ptr && (*ptr == ' ' || *ptr == '\t' || *ptr == '\n' \
+			|| *ptr == '\v' || *ptr == '\f' || *ptr == '\r'))
 		ptr++;
-	if (*ptr  == '+' || *ptr == '-')
+	if (*ptr == '+' || *ptr == '-')
 	{
-		if (*ptr  == '-')
+		if (*ptr == '-')
 			*sign = -1;
 		ptr++;
 	}
 	return (ptr);
 }
 
-t_bool	validate_and_set_end(char *ptr, char **end)
+static t_bool	validate_and_set_end(char *ptr, char **end)
 {
 	t_bool	flag;
-	
+
 	flag = FALSE;
 	while (*ptr && ft_isdigit(*ptr))
 	{
@@ -45,7 +46,7 @@ t_bool	validate_and_set_end(char *ptr, char **end)
 	return (TRUE);
 }
 
-t_bool	is_long_over(const long num, const char c, int sign)
+static t_bool	is_long_over(const long num, const char c, int sign)
 {
 	if (sign > 0)
 	{
@@ -64,7 +65,7 @@ t_bool	is_long_over(const long num, const char c, int sign)
 	return (FALSE);
 }
 
-t_bool	validate_and_set_num(const char *str, int *ans_num)
+static t_bool	validate_and_set_num(const char *str, int *ans_num)
 {
 	int		sign;
 	char	*start;
@@ -87,20 +88,20 @@ t_bool	validate_and_set_num(const char *str, int *ans_num)
 	return (TRUE);
 }
 
-int do_exit(char **cmd_args, t_manager *manager)
+int	do_exit(char **cmd_args, t_manager *manager)
 {
-	size_t argc;
-	int num;
+	size_t	argc;
+	int		num;
 
 	argc = count_strs(cmd_args);
 	if (argc == 1)
 	{
-		ft_putendl_fd("eixt", STDOUT_FILENO);
+		ft_putendl_fd("eixt", STDERR_FILENO);
 		exit (ft_atoi(manager->exit_status));
 	}
 	if (!validate_and_set_num(cmd_args[1], &num))
 	{
-		ft_putendl_fd("eixt", STDOUT_FILENO);
+		ft_putendl_fd("eixt", STDERR_FILENO);
 		perror_arg3("exit", cmd_args[1], "numeric argument required");
 		exit (2);
 	}
@@ -109,19 +110,6 @@ int do_exit(char **cmd_args, t_manager *manager)
 		perror_arg2("exit", "too many arguments");
 		return (1);
 	}
-	ft_putendl_fd("eixt", STDOUT_FILENO);
+	ft_putendl_fd("eixt", STDERR_FILENO);
 	exit ((unsigned char)num);
 }
-	// dprintf(STDERR_FILENO, "exitstatus=%u;\n", (unsigned char)num);
-
-// int	main(int argc, char **argv)
-// {
-// 	int num = 0;
-// 	if (argc == 2 && validate_and_set_num(argv[1], &num))
-// 	{
-// 		printf("%d\n", num);
-// 		printf("%d\n", (unsigned char)num);
-// 	}
-// 	else
-// 		printf("error\n");
-// }

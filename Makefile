@@ -6,13 +6,13 @@
 #    By: toshi <toshi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 15:18:29 by tofujiwa          #+#    #+#              #
-#    Updated: 2024/04/20 01:37:49 by toshi            ###   ########.fr        #
+#    Updated: 2024/04/27 20:17:52 by toshi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		:=	minishell
 CC			:=	cc
-# CFLAGS		:=	-Wall -Wextra -Werror 
+ CFLAGS		:=	-Wall -Wextra -Werror 
 RL_LIB_FLAG	:=	-L $(shell brew --prefix readline)/lib
 RL_H_FLAG	:=	-I $(shell brew --prefix readline)/include
 RL_FLAGS	:=	-lreadline $(RL_LIB_FLAG) $(RL_H_FLAG)
@@ -28,7 +28,8 @@ SRC_PATHS	:=	$(LIBFT_PATH) \
 				./
 SRCS		:=	$(foreach path, $(SRC_PATHS), $(wildcard $(path)*.c))
 OUT_PATTERN	:=	$(LIBFT_PATH)% \
-				./main_test.c
+				parse/syntax_check.c \
+				parse/validate_syntax.c
 OBJS		:=	$(patsubst %.c, %.o, $(filter-out $(OUT_PATTERN), $(SRCS)))
 
 
@@ -50,5 +51,8 @@ fclean: clean
 	rm -f $(NAME)
 
 re : fclean all
+
+norm :
+	norminette $(SRC_PATHS)
 
 .PHONY: all clean fclean re

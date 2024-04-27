@@ -3,58 +3,101 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tofujiwa <tofujiwa@student.42.jp>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/16 00:44:29 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/20 00:51:32 by toshi            ###   ########.fr       */
+/*   Created: 2024/03/22 16:33:48 by username          #+#    #+#             */
+/*   Updated: 2024/04/20 17:31:05 by tofujiwa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
-#include "../utils/utils.h"
 
-//redir_tknの次がNULLじゃない前提で実装している
-static void	_del_space_afrer_redir(t_token **tkn_head)
+void	split_by_pipe(t_tree_node **tree, t_token **head, ssize_t count)
 {
-	t_token *prev;
-	t_token *ptr;
+	t_tree_node	*tree_head;
+	t_bool		is_root;
+	t_token		*last_pipe;
 
-	prev = NULL;
-	ptr = *tkn_head;
-	while(ptr != NULL)
+	tree_head = *tree;
+	is_root = TRUE;
+	(*tree)->prev = NULL;
+	while (count)
 	{
-		if (prev != NULL && is_redir_tkn(prev->kind) && ptr->kind == TKN_SPACE)
-			remove_token(tkn_head, ptr, prev);
-		prev = ptr;
-		ptr = ptr->next;
+		last_pipe = find_last_pipe (*head, count);
+		(*tree)->right = rs_tree_node (head, last_pipe, is_root, *tree);
+		(*tree)->init_data.cmd_tokens = \
+		put_pipe_token (head, last_pipe, count);
+		(*tree)->left = ls_tree_node (head, *tree);
+		is_root = FALSE;
+		*tree = (*tree)->left;
+		count = count_pipe (*head);
 	}
+	*tree = tree_head;
 }
 
-//if (next_tree_nodeのtkn_head == now_tree_nodeのtkn_last)
-//	nextをNULLを入れて区切る
-static void	_split_last_tkn(t_tree_node *tnode_ptr)
+ssize_t	count_pipe(t_token *head)
 {
-	t_token *tkn_ptr;
-	t_token *tkn_next_head;
+	ssize_t	count;
 
-	while(tnode_ptr->right != NULL)
-	{	
-		tkn_ptr = tnode_ptr->init_data.cmd_tokens;
-		tkn_next_head = tnode_ptr->right->init_data.cmd_tokens;
-		while(tkn_ptr->next != tkn_next_head)
-			tkn_ptr = tkn_ptr->next;
-		tkn_ptr->next = NULL;
-		tnode_ptr = tnode_ptr->right;
+	count = 0;
+	while (head != NULL)
+	{
+		if (head->kind == TKN_PIPE)
+			count++;
+		head = head->next;
 	}
+	return (count);
 }
 
-t_tree_node *parse(t_token *head)
+t_token	*find_prev_last_pipe(t_token *head, ssize_t count)
 {
-	t_tree_node *tnode_list;
+	t_token	*current_head;
+	ssize_t	pipe_count;
 
-	_del_space_afrer_redir(&head);
-	tnode_list = make_tnode_list(head);
-	_split_last_tkn(tnode_list);
-	move_to_redir_tokens(tnode_list);
-	return tnode_list;
+	current_head = head;
+	pipe_count = 0;
+	while (current_head->next != NULL)
+	{
+		if (current_head->next->kind == TKN_PIPE)
+			pipe_count++;
+		if (pipe_count == count)
+			return (current_head);
+		current_head = current_head->next;
+	}
+	return (head);
+}
+
+t_token	*put_pipe_token(t_token **head, t_token *last_pipe, ssize_t count)
+{
+	t_token	*temp_head;
+	t_token	*prev_last_pipe;
+
+	temp_head = *head;
+	prev_last_pipe = find_prev_last_pipe (*head, count);
+	*head = prev_last_pipe;
+	(*head)->next = last_pipe->next;
+	(*head) = temp_head;
+	return (last_pipe);
+}
+
+t_token	*find_last_pipe(t_token *head, ssize_t count)
+{
+	t_token	*current_head;
+	ssize_t	pipe_count;
+
+	current_head = head;
+	pipe_count = 0;
+	while (current_head != NULL)
+	{
+		if (current_head->kind == TKN_PIPE)
+		{
+			pipe_count++;
+			if (count == pipe_count)
+				break ;
+		}
+		current_head = current_head->next;
+	}
+	if (pipe_count == 0)
+		current_head = NULL;
+	return (current_head);
 }

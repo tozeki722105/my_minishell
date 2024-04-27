@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:29:28 by tofujiwa          #+#    #+#             */
-/*   Updated: 2024/04/20 01:23:26 by toshi            ###   ########.fr       */
+/*   Updated: 2024/04/27 20:46:34 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-#define	SYS_FAILURE	-1
-#define	CHILD		0
-#define EXIST		0
-#define NOT_EXIST	-1
-#define DEFAULT		0
-#define AMBIGUOUS	NULL
+# define SYS_FAILURE	-1
+# define CHILD			0
+# define EXIST			0
+# define NOT_EXIST		-1
+# define DEFAULT		0
+# define ERROR_STATUS	1
 
-extern int	signal_flag;
+int	g_signal_flag;
 
 typedef enum e_bool
 {
@@ -91,8 +91,8 @@ typedef struct s_adv_data
 
 typedef struct s_tree_node
 {
-	t_init_data		init_data;
-	t_adv_data		adv_data;
+	t_init_data			init_data;
+	t_adv_data			adv_data;
 	struct s_tree_node	*prev;
 	struct s_tree_node	*left;
 	struct s_tree_node	*right;
@@ -111,7 +111,6 @@ typedef struct s_manager
 	char	*current_dir;
 	char	*exit_status;
 	int		heredoc_line;
-	int		tmp_fd;
 }	t_manager;
 
 t_manager	initialize(void);
