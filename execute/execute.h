@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:29:28 by tofujiwa          #+#    #+#             */
-/*   Updated: 2024/04/25 20:16:12 by tozeki           ###   ########.fr       */
+/*   Updated: 2024/04/28 09:26:20 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 # define EXECUTE_H
 
 # include "../minishell.h"
+
+# define CHILD			0
+# define EXIST			0
+# define NOT_EXIST		-1
+# define DEFAULT		0
+# define ERROR_STATUS	1
 
 enum	e_pipefd_direct
 {

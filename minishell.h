@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 18:29:28 by tofujiwa          #+#    #+#             */
-/*   Updated: 2024/04/27 20:46:34 by toshi            ###   ########.fr       */
+/*   Updated: 2024/04/28 09:26:05 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,10 @@
 # include <signal.h>
 # include <fcntl.h>
 # include <dirent.h>
-# include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
 # define SYS_FAILURE	-1
-# define CHILD			0
-# define EXIST			0
-# define NOT_EXIST		-1
-# define DEFAULT		0
-# define ERROR_STATUS	1
 
 int	g_signal_flag;
 
