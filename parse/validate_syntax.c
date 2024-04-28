@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   validate_syntax.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 15:41:57 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/26 19:31:32 by tozeki           ###   ########.fr       */
+/*   Updated: 2024/04/28 07:28:18 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokenize.h"
-#include "../minishell.h"
+#include "parse.h"
 #include "../utils/utils.h"
 #include "../libft/libft.h"
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_print2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tozeki <tozeki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:07:30 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/26 21:50:30 by tozeki           ###   ########.fr       */
+/*   Updated: 2024/04/28 09:11:02 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,12 @@ void	print_adv_data(t_tree_node	*tree_node)
 	}
 }
 
+void	print_tree_node(t_tree_node *ptr)
+{
+	print_init_data(ptr);
+	// print_adv_data(ptr);
+}
+
 /// @brief 木構造がちゃんと構成されているか、prevがちゃんとつながっているかのテスト
 void	print_tree(t_tree_node *root)
 {
@@ -60,13 +66,16 @@ void	print_tree(t_tree_node *root)
 	ptr = root;
 	while (ptr->left != NULL)
 	{
+		print_tree_node(ptr);
+		if (ptr->right)
+			print_tree_node(ptr->right);
 		ptr = ptr->left;
 	}
 	while (ptr != NULL)
 	{
-		print_adv_data(ptr);
+		print_tree_node(ptr);
 		if (ptr->right != NULL)
-			print_adv_data(ptr->right);
+			print_tree_node(ptr->right);
 		ptr = ptr->prev;
 	}
 }

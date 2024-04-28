@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 20:56:07 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/27 20:59:47 by toshi            ###   ########.fr       */
+/*   Updated: 2024/04/28 09:08:28 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,10 @@ static void	add_redir_last(t_redir **head, t_redir *new)
 static t_redir	*make_new_redir(t_token *first, t_token *last)
 {
 	t_redir	*node;
-	char	*tmp_val;
 
 	node = (t_redir *)ft_xmalloc(sizeof(t_redir));
-	tmp_val = substr_from_token(first->next, last);
+	node->val = substr_from_token(first->next, last);
 	node->kind = convert_redir_kind(first);
-	free(tmp_val);
 	node->next = NULL;
 	return (node);
 }

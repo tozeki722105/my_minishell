@@ -3,101 +3,81 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tofujiwa <tofujiwa@student.42.jp>          +#+  +:+       +#+        */
+/*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/22 16:33:48 by username          #+#    #+#             */
-/*   Updated: 2024/04/20 17:31:05 by tofujiwa         ###   ########.fr       */
+/*   Created: 2024/04/27 21:28:02 by toshi             #+#    #+#             */
+/*   Updated: 2024/04/28 09:07:02 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
+#include "../libft/libft.h"
+#include "../utils/utils.h"
 
-void	split_by_pipe(t_tree_node **tree, t_token **head, ssize_t count)
+static t_token	*search_last_pipe(t_token* ptr)
 {
-	t_tree_node	*tree_head;
-	t_bool		is_root;
-	t_token		*last_pipe;
+	t_token *last_pipe;
 
-	tree_head = *tree;
-	is_root = TRUE;
-	(*tree)->prev = NULL;
-	while (count)
+	last_pipe = NULL;
+	while (ptr != NULL)
 	{
-		last_pipe = find_last_pipe (*head, count);
-		(*tree)->right = rs_tree_node (head, last_pipe, is_root, *tree);
-		(*tree)->init_data.cmd_tokens = \
-		put_pipe_token (head, last_pipe, count);
-		(*tree)->left = ls_tree_node (head, *tree);
-		is_root = FALSE;
-		*tree = (*tree)->left;
-		count = count_pipe (*head);
+		if (ptr->kind == TKN_PIPE)
+			last_pipe = ptr;
+		ptr = ptr->next;
 	}
-	*tree = tree_head;
-}
-
-ssize_t	count_pipe(t_token *head)
-{
-	ssize_t	count;
-
-	count = 0;
-	while (head != NULL)
-	{
-		if (head->kind == TKN_PIPE)
-			count++;
-		head = head->next;
-	}
-	return (count);
-}
-
-t_token	*find_prev_last_pipe(t_token *head, ssize_t count)
-{
-	t_token	*current_head;
-	ssize_t	pipe_count;
-
-	current_head = head;
-	pipe_count = 0;
-	while (current_head->next != NULL)
-	{
-		if (current_head->next->kind == TKN_PIPE)
-			pipe_count++;
-		if (pipe_count == count)
-			return (current_head);
-		current_head = current_head->next;
-	}
-	return (head);
-}
-
-t_token	*put_pipe_token(t_token **head, t_token *last_pipe, ssize_t count)
-{
-	t_token	*temp_head;
-	t_token	*prev_last_pipe;
-
-	temp_head = *head;
-	prev_last_pipe = find_prev_last_pipe (*head, count);
-	*head = prev_last_pipe;
-	(*head)->next = last_pipe->next;
-	(*head) = temp_head;
 	return (last_pipe);
 }
 
-t_token	*find_last_pipe(t_token *head, ssize_t count)
+static t_tree_node	*make_new_tree(t_token *first, t_token *last)
 {
-	t_token	*current_head;
-	ssize_t	pipe_count;
+	t_tree_node *new;
 
-	current_head = head;
-	pipe_count = 0;
-	while (current_head != NULL)
+	new = (t_tree_node *)ft_xcalloc(1, sizeof(t_tree_node));
+	new->init_data.cmd_tokens = first;
+	if (last)
+		last->next = NULL;
+	return (new);
+}
+
+//最低1つはpipeノードの存在が保証されている前提で実装している
+//pipeノードの前には最低1つ何かしらのノードがあること(syntax_errでない)前提で実装している
+static t_tree_node *make_tree_list(t_token *tkn_head, t_tree_node *pipe_node_prev)
+{
+	t_tree_node	*right_node;
+	t_tree_node	*pipe_node;
+	t_tree_node	*left_node;
+	t_token		*last_pipe;
+
+	last_pipe = search_last_pipe(tkn_head);
+	search_prev_token(tkn_head, last_pipe)->next = NULL;
+	right_node = make_new_tree(last_pipe->next, NULL);
+	pipe_node = make_new_tree(last_pipe, last_pipe);
+	right_node->prev = pipe_node;
+	pipe_node->right = right_node;
+	pipe_node->prev = pipe_node_prev;
+	last_pipe = search_last_pipe(tkn_head);
+	if (!last_pipe)
 	{
-		if (current_head->kind == TKN_PIPE)
-		{
-			pipe_count++;
-			if (count == pipe_count)
-				break ;
-		}
-		current_head = current_head->next;
+		left_node = make_new_tree(tkn_head, NULL);
+		left_node->prev = pipe_node;
+		pipe_node->left = left_node;
+		return (pipe_node);
 	}
-	if (pipe_count == 0)
-		current_head = NULL;
-	return (current_head);
+	pipe_node->left = make_tree_list(tkn_head, pipe_node);
+	return (pipe_node);
+}
+
+t_tree_node *parse(t_token *tkn_head)
+{
+	t_token *pipe;
+	
+	if (!validate_syntax(tkn_head))
+	{
+		free_token_list(tkn_head);
+		return (NULL);	
+	}
+	pipe = search_last_pipe(tkn_head);
+	if (!pipe)
+		return (make_new_tree(tkn_head, NULL));
+	return (make_tree_list(tkn_head, NULL));
 }
