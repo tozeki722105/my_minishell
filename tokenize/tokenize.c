@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/15 16:33:26 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/27 20:40:50 by toshi            ###   ########.fr       */
+/*   Updated: 2024/05/01 00:09:40 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static enum e_token_kind	save_env_or_text_kind(char *first)
 	char	*next;
 
 	next = first + sizeof(char);
-	if (*next == '\0' || (*next != '?' && *next != '$' && is_delim(*next)))
+	if (is_delim(*next) && *next != '$')
 		return (TKN_TEXT);
 	return (TKN_ENV);
 }

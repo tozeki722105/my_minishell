@@ -6,7 +6,7 @@
 #    By: toshi <toshi@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 15:18:29 by tofujiwa          #+#    #+#              #
-#    Updated: 2024/04/28 09:06:06 by toshi            ###   ########.fr        #
+#    Updated: 2024/05/03 18:09:33 by toshi            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,7 @@ RL_H_FLAG	:=	-I $(shell brew --prefix readline)/include
 RL_FLAGS	:=	-lreadline $(RL_LIB_FLAG) $(RL_H_FLAG)
 LIBFT_PATH	:=	libft/
 LIBFT_A		:=	$(LIBFT_PATH)libft.a
-SRC_PATHS	:=	$(LIBFT_PATH) \
-				utils/ \
+SRC_PATHS	:=	utils/ \
 				tokenize/ \
 				parse/ \
 				expansion/ \
@@ -27,18 +26,20 @@ SRC_PATHS	:=	$(LIBFT_PATH) \
 				builtin/ \
 				./
 SRCS		:=	$(foreach path, $(SRC_PATHS), $(wildcard $(path)*.c))
-OUT_PATTERN	:=	$(LIBFT_PATH)% 
+OUT_PATTERN	:=	
 OBJS		:=	$(patsubst %.c, %.o, $(filter-out $(OUT_PATTERN), $(SRCS)))
 
 
 all:	$(NAME)
 
-$(NAME): $(OBJS)
-	make all -C $(LIBFT_PATH)
+$(NAME): $(OBJS) $(LIBFT_A)
 	$(CC) $(CFLAGS) $(RL_FLAGS) $(LIBFT_A) $(OBJS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(RL_H_FLAG) -c $< -o $@
+
+$(LIBFT_A): $(LIBFT_PATH)*.c
+	make all -C $(LIBFT_PATH)
 
 clean:
 	make clean -C $(LIBFT_PATH)

@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/14 02:02:09 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/20 21:45:17 by toshi            ###   ########.fr       */
+/*   Updated: 2024/05/01 00:00:36 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_bool	is_quote(char c)
 t_bool	is_delim(char c)
 {
 	return (is_ifs(c) || is_quote(c) || c == '<' || c == '>' \
-		|| c == '$' || c == '|');
+		|| c == '$' || c == '|' || c == '\0');
 }
 
 t_bool	is_equal_str(const char *s1, char *s2)

@@ -43,6 +43,7 @@ static size_t	strlcpy_from_tkn(char *dest, t_token *src, size_t len)
 			dest_i++;
 			val_i++;
 		}
+		// dest_i += strlcat_ret_catlen(dest, src->val, len);
 		src = src->next;
 	}
 	dest[dest_i] = '\0';
@@ -55,7 +56,7 @@ char	*substr_from_token(t_token *first, t_token *last)
 	char	*str;
 
 	len = strlen_from_tkn(first, last);
-	str = (char *)ft_xmalloc(sizeof(char) * (len + 1));
+	str = (char *)ft_xcalloc(len + 1, sizeof(char));
 	strlcpy_from_tkn(str, first, (len + 1));
 	return (str);
 }

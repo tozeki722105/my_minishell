@@ -6,7 +6,7 @@
 /*   By: toshi <toshi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 21:28:02 by toshi             #+#    #+#             */
-/*   Updated: 2024/04/28 09:07:02 by toshi            ###   ########.fr       */
+/*   Updated: 2024/05/03 18:16:04 by toshi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,17 +67,40 @@ static t_tree_node *make_tree_list(t_token *tkn_head, t_tree_node *pipe_node_pre
 	return (pipe_node);
 }
 
+// token_listの最後がリダイレクト->スペースになることは、
+// syntax_errorではじいているため、ない
+static void	remove_space_afrer_redir(t_token **tkn_head)
+{
+	t_token	*ptr;
+	t_token	*target;
+	t_token	*target_prev;
+
+	target = *tkn_head;
+	ptr = target->next;
+	while (ptr != NULL)
+	{
+		target_prev = search_prev_token(*tkn_head, target);
+		if (target_prev && is_redir_tkn(target_prev->kind) && target->kind == TKN_SPACE)
+			remove_token(tkn_head, target, target_prev);
+		target = ptr;
+		ptr = ptr->next;
+	}
+}
+
 t_tree_node *parse(t_token *tkn_head)
 {
-	t_token *pipe;
+	t_tree_node *root;
 	
 	if (!validate_syntax(tkn_head))
 	{
 		free_token_list(tkn_head);
 		return (NULL);	
 	}
-	pipe = search_last_pipe(tkn_head);
-	if (!pipe)
-		return (make_new_tree(tkn_head, NULL));
-	return (make_tree_list(tkn_head, NULL));
+	remove_space_afrer_redir(&tkn_head);
+	if (!search_last_pipe(tkn_head))
+		root = make_new_tree(tkn_head, NULL);
+	else
+		root = make_tree_list(tkn_head, NULL);
+	move_to_redir_tokens(root);
+	return (root);
 }
